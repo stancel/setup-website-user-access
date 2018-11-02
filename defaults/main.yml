@@ -1,0 +1,6 @@
+---
+# defaults file for setup-website-user-access
+
+# The document root/absolute path that is the parent of the new user's home directory
+setup_website_user_access_web_root: "/var/www"
+

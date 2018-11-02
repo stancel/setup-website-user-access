@@ -1,0 +1,27 @@
+---
+# tasks file for setup-website-user-access
+
+- name: "Add users for each site"
+  user:
+    name: "{{ item.name }}" 
+    home: "{{ setup_website_user_access_web_root }}/{{ item.name }}"
+    shell: /usr/sbin/nologin 
+    password: "{{ item.user_password|password_hash('sha512') }}"
+  with_items: '{{ setup_website_user_access_list }}'
+
+- name: "Add user to sshd_config"
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    block: |
+      Match User {{ item.name }}
+        ChrootDirectory {{ setup_website_user_access_web_root }}/{{ item.name }}
+        X11Forwarding no
+        AllowTcpForwarding no
+        ForceCommand internal-sftp
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
+  with_items: '{{ setup_website_user_access_list }}'
+  notify: restart sshd
+
+
+
+
