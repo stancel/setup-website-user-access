@@ -5,8 +5,10 @@
   user:
     name: "{{ item.name }}" 
     home: "{{ setup_website_user_access_web_root }}/{{ item.name }}"
-    shell: /usr/sbin/nologin 
-    password: "{{ item.user_password|password_hash('sha512') }}"
+    groups: "{{ item.name }},www-data"
+    shell: /usr/sbin/nologin
+    update_password: "always" 
+    password: "{{ item.user_password }}"
   with_items: '{{ setup_website_user_access_list }}'
 
 - name: "Add user to sshd_config"
