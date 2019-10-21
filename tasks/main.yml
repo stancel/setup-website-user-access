@@ -5,7 +5,7 @@
   user:
     name: "{{ item.name }}" 
     home: "{{ setup_website_user_access_web_root }}/{{ item.name }}"
-    groups: "{{ item.name }},www-data"
+    groups: "www-data"
     shell: /usr/sbin/nologin
     update_password: "always" 
     password: "{{ item.user_password }}"
