@@ -1,6 +1,15 @@
 ---
 # tasks file for setup-website-user-access
 
+- name: "Create home directories for user"
+  file: 
+    path: "{{ setup_website_user_access_web_root }}/{{ item.name }}"
+    state: directory 
+    owner: root
+    group: root
+  when: item.create_user
+  with_items: '{{ nginx_site_setup_sites_to_set_up }}'
+
 - name: "Add users for each site"
   user:
     name: "{{ item.name }}" 
@@ -10,6 +19,7 @@
     update_password: "always" 
     password: "{{ item.user_password }}"
   with_items: '{{ setup_website_user_access_list }}'
+  when: item.create_user
 
 - name: "Add user to sshd_config"
   blockinfile:
@@ -22,8 +32,5 @@
         ForceCommand internal-sftp
     marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
   with_items: '{{ setup_website_user_access_list }}'
+  when: item.create_user
   notify: restart sshd
-
-
-
-
